@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - ECommerceApi</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .auth-container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 40px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #28a745;
+            box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+        }
+
+        .form-group small {
+            display: block;
+            color: #999;
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .btn-register {
+            width: 100%;
+            padding: 12px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-register:hover {
+            background-color: #218838;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .form-footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: #dc3545;
+            background-color: #f8d7da;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-message {
+            color: #155724;
+            background-color: #d4edda;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .validation-message {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">ECommerceApi</h1>
+                <p class="tagline">Create Your Account</p>
+            </div>
+        </header>
+
+        <div class="auth-container">
+            <h2>Register</h2>
+
+            <div id="errorMessage" class="error-message"></div>
+            <div id="successMessage" class="success-message"></div>
+
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required placeholder="Choose a username (3-50 characters)">
+                    <small>Must be 3-50 characters long</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required placeholder="Enter your email address">
+                    <small>Must be a valid email address</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required placeholder="Enter your password (8+ characters)">
+                    <small>Must be at least 8 characters long</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password:</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Re-enter your password">
+                    <div id="passwordMatch" class="validation-message">Passwords do not match</div>
+                </div>
+
+                <button type="submit" class="btn-register">Register</button>
+            </form>
+
+            <div class="form-footer">
+                <p>Already have an account? <a href="/login.html">Login here</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Real-time password matching validation
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const passwordMatchMessage = document.getElementById('passwordMatch');
+
+        function checkPasswordMatch() {
+            if (confirmPasswordInput.value && passwordInput.value !== confirmPasswordInput.value) {
+                passwordMatchMessage.style.display = 'block';
+            } else {
+                passwordMatchMessage.style.display = 'none';
+            }
+        }
+
+        passwordInput.addEventListener('change', checkPasswordMatch);
+        confirmPasswordInput.addEventListener('input', checkPasswordMatch);
+
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const confirmPassword = document.getElementById('confirmPassword').value.trim();
+
+            const errorDiv = document.getElementById('errorMessage');
+            const successDiv = document.getElementById('successMessage');
+
+            // Validation
+            if (password !== confirmPassword) {
+                errorDiv.textContent = 'Passwords do not match';
+                errorDiv.style.display = 'block';
+                successDiv.style.display = 'none';
+                return;
+            }
+
+            if (username.length < 3 || username.length > 50) {
+                errorDiv.textContent = 'Username must be between 3 and 50 characters';
+                errorDiv.style.display = 'block';
+                successDiv.style.display = 'none';
+                return;
+            }
+
+            if (password.length < 8) {
+                errorDiv.textContent = 'Password must be at least 8 characters long';
+                errorDiv.style.display = 'block';
+                successDiv.style.display = 'none';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/v1/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        email: email,
+                        password: password,
+                        confirmPassword: confirmPassword
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    successDiv.textContent = 'Registration successful! Redirecting to login...';
+                    successDiv.style.display = 'block';
+                    errorDiv.style.display = 'none';
+
+                    // Redirect to login after 1.5 seconds
+                    setTimeout(() => {
+                        window.location.href = '/login.html';
+                    }, 1500);
+                } else {
+                    errorDiv.textContent = data.message || 'Registration failed. Please try again.';
+                    errorDiv.style.display = 'block';
+                    successDiv.style.display = 'none';
+                }
+            } catch (error) {
+                errorDiv.textContent = 'An error occurred during registration. Please try again.';
+                errorDiv.style.display = 'block';
+                successDiv.style.display = 'none';
+                console.error('Registration error:', error);
+            }
+        });
+    </script>
+</body>
+</html>
